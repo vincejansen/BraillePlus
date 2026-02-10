@@ -18,35 +18,35 @@ addon_info = AddonInfo(
 	# Add-on summary/title, usually the user visible name of the add-on
 	# Translators: Summary/title for this add-on
 	# to be shown on installation and add-on information found in add-on store
-	addon_summary=_("BraillePlus"),
+	addon_summary=_("Braille Plus"),
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""Toont de selectie van items in braille middels punten 7 en 8, alsmede opmaak dankzij Attribra."""),
 	# version
-	addon_version="1.0",
+	addon_version="1.0.1",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""Initial release."""),
+	addon_changelog=_("""Updated compatibility to support NVDA 2026.1"""),
 	# Author(s)
 	addon_author="Vince Jansen <jansen.vince@gmail.com>",
 	# URL for the add-on documentation support
-	addon_url=None,
+	addon_url="https://github.com/vincejansen/BraillePlus",
 	# URL for the add-on repository where the source code can be found
-	addon_sourceURL=None,
+	addon_source_url="https://github.com/vincejansen/BraillePlus",
 	# Documentation file name
 	addon_docFileName="readme.html",
 	# Minimum NVDA version supported (e.g. "2019.3.0", minor version is optional)
-	addon_minimumNVDAVersion=2025.1,
+	addon_minimumNVDAVersion=2024.1,
 	# Last NVDA version supported/tested (e.g. "2024.4.0", ideally more recent than minimum version)
-	addon_lastTestedNVDAVersion=2025.9,
+	addon_lastTestedNVDAVersion=2026.1,
 	# Add-on update channel (default is None, denoting stable releases,
 	# and for development releases, use "dev".)
 	# Do not change unless you know what you are doing!
 	addon_updateChannel=None,
 	# Add-on license such as GPL 2
-	addon_license=None,
+	addon_license="GPL 2",
 	# URL for the license document the ad-on is licensed under
-	addon_licenseURL=None,
+	addon_licenseURL="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
 )
 
 import os.path
