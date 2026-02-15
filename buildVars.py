@@ -21,7 +21,7 @@ addon_info = AddonInfo(
 	addon_summary=_("Braille Plus"),
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
-	addon_description=_("""Toont de selectie van items in braille middels punten 7 en 8, alsmede opmaak dankzij Attribra."""),
+	addon_description=_("""Displays the selection of items in braille with dots 7 and 8, as well as formatting thanks to Attribra."""),
 	# version
 	addon_version="1.0.1",
 	# Brief changelog for this version
@@ -58,7 +58,7 @@ import os.path
 # pythonSources = ["addon/globalPlugins/*.py"]
 # For more information on SCons Glob expressions please take a look at:
 # https://scons.org/doc/production/HTML/scons-user/apd.html
-pythonSources: list[str] = []
+pythonSources = ["addon/globalPlugins/*.py"]
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources: list[str] = pythonSources + ["buildVars.py"]
@@ -73,7 +73,7 @@ excludedFiles: list[str] = []
 # If your add-on is written in a language other than english, modify this variable.
 # For example, set baseLanguage to "es" if your add-on is primarily written in spanish.
 # You must also edit .gitignore file to specify base language files to be ignored.
-baseLanguage: str = "nl"
+baseLanguage: str = "en"
 
 # Markdown extensions for add-on documentation
 # Most add-ons do not require additional Markdown extensions.
