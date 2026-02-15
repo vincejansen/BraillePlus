@@ -10,6 +10,7 @@ import controlTypes
 import globalPluginHandler
 from scriptHandler import script
 import ui
+import languageHandler
 from config.configFlags import TetherTo, BrailleMode
 
 from gui.settingsDialogs import BrailleSettingsPanel
@@ -21,6 +22,18 @@ try:
 except NameError:
     def _(s):
         return s
+
+def _isDutchUI():
+    """Return True if NVDA's interface language is Dutch (nl*)."""
+    try:
+        lang = languageHandler.getLanguage() or ""
+    except Exception:
+        lang = ""
+    return lang.lower().startswith("nl")
+
+def _L(nlText: str, enText: str) -> str:
+    """Return Dutch text when NVDA is set to Dutch, otherwise English."""
+    return nlText if _isDutchUI() else enText
 
 # ----------------
 # Config
@@ -40,9 +53,9 @@ def _setEnabled(value):
 
 def _announceEnabledState(enabled):
     ui.message(
-        _("Selectiemarkering in braille: ingeschakeld")
+        _L("Selectiemarkering in braille: ingeschakeld", "Selection marking in braille: enabled")
         if enabled else
-        _("Selectiemarkering in braille: uitgeschakeld")
+        _L("Selectiemarkering in braille: uitgeschakeld", "Selection marking in braille: disabled")
     )
 
 SELECTION_SHAPE = 0xC0  # dots 7+8
@@ -69,7 +82,7 @@ def _patchBrailleSettingsPanel():
         self._selectedDotsEnableChk = helper.addItem(
             wx.CheckBox(
                 self,
-                label=_("Markeer geselecteerde items met punten 7 en 8 (alleen itemtekst)")
+                label=_L("Markeer geselecteerde items met punten 7 en 8 (alleen itemtekst)", "Mark selected items with dots 7 and 8 (item text only)")
             )
         )
         self._selectedDotsEnableChk.SetValue(_isEnabled())
@@ -110,7 +123,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super().terminate()
 
     @script(
-        description=_("Schakelt selectiemarkering met punten 7 en 8 in braille aan of uit."),
+        description=_L("Schakelt selectiemarkering met punten 7 en 8 in braille aan of uit.", "Toggles selection marking with dots 7 and 8 in braille."),
         category=_("Braille")
     )
     def script_toggleSelectedDots(self, gesture):
