@@ -23,10 +23,12 @@ addon_info = AddonInfo(
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""Displays the selection of items in braille with dots 7 and 8, as well as formatting thanks to Attribra."""),
 	# version
-	addon_version="1.0.1",
+	addon_version="1.0.2",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""Updated compatibility to support NVDA 2026.1"""),
+	addon_changelog=_("""Updated compatibility to support NVDA 2026.1
+    Added interface for Attribra,
+    Created translatable version of the add-on."""),
 	# Author(s)
 	addon_author="Vince Jansen <jansen.vince@gmail.com>",
 	# URL for the add-on documentation support
