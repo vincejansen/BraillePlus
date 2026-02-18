@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #Braille improvement add-on for NVDA. 
 #This add-on is released under GPL version 2. 
 #Copyright 2025 Vince Jansen <jansen.vince@gmail.com> 
