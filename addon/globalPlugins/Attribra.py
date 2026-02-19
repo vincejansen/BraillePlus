@@ -6,7 +6,7 @@
 #Copyright (C) 2017 Alberto Zanella <lapostadialberto@gmail.com>
 #
 # Extended with an NVDA Settings panel (Attribra) to edit attribra.ini without manual editing.
-
+#Copyright 2025 Vince Jansen <jansen.vince@gmail.com>
 import os
 
 import addonHandler

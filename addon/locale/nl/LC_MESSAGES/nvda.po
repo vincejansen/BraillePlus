@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 'BraillePlus' '1.0.1'\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
 "POT-Creation-Date: 2026-02-18 20:48+0100\n"
-"PO-Revision-Date: 2026-02-18 21:42+0100\n"
+"PO-Revision-Date: 2026-02-19 23:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -166,7 +166,7 @@ msgstr "Selectiemarkering in braille: uitgeschakeld"
 
 #: addon\globalPlugins\BrailleSelection.py:76
 msgid "Mark selected items with dots 7 and 8 (item text only)"
-msgstr "Markeer geselecteerde tekst met punten 7 en 8 (allen itemtekst)"
+msgstr "Markeer geselecteerde tekst met punten 7 en 8 (alleen itemtekst)"
 
 #: addon\globalPlugins\BrailleSelection.py:117
 msgid "Toggles braille selection marking with dots 7 and 8 on or off."
