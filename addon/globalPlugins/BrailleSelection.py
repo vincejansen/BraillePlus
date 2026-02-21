@@ -7,6 +7,31 @@
 import addonHandler
 addonHandler.initTranslation()
 
+# Logboek (NVDA log)
+try:
+    from logHandler import log
+except Exception:  # Fallback for unit tests / non-NVDA environments
+    import logging
+    log = logging.getLogger(__name__)
+
+
+def _logAddonLoaded():
+    """Write a friendly info line to the NVDA log when the add-on loads."""
+    try:
+        addon = addonHandler.getCodeAddon()
+        if addon and getattr(addon, "manifest", None):
+            name = addon.manifest.get("name") or addon.name or "Add-on"
+            version = addon.manifest.get("version") or ""
+            if version:
+                log.info(f"{name} {version} loaded")
+            else:
+                log.info(f"{name} loaded")
+        else:
+            log.info("BrailleSelection add-on loaded")
+    except Exception:
+        log.info("BrailleSelection add-on loaded")
+
+
 import braille
 import api
 import config
@@ -43,9 +68,12 @@ def _setEnabled(value):
     config.conf[CONF_SECTION]["enabled"] = bool(value)
 
 def _announceEnabledState(enabled):
+        # Translators: Message reported when braille selection marking has been enabled.
+    # Translators: This is spoken/brailled immediately after toggling the feature.
     ui.message(
         _("Braille selection marking: enabled")
         if enabled else
+        # Translators: Message reported when braille selection marking has been disabled.
         _("Braille selection marking: disabled")
     )
 
@@ -73,6 +101,8 @@ def _patchBrailleSettingsPanel():
         self._selectedDotsEnableChk = helper.addItem(
             wx.CheckBox(
                 self,
+                # Translators: Label for a checkbox in NVDA's Braille settings panel.
+# Translators: When enabled, dots 7 and 8 are added to the braille cells corresponding to the selected item's text.
                 label=_("Mark selected items with dots 7 and 8 (item text only)")
             )
         )
@@ -104,6 +134,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super().__init__()
         _patchBrailleSettingsPanel()
         braille.pre_writeCells.register(self._onPreWriteCells)
+        _logAddonLoaded()
 
     def terminate(self):
         try:
@@ -114,7 +145,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         super().terminate()
 
     @script(
+        # Translators: Description for an input gesture/script.
+# Translators: This script toggles marking of selected items in braille using dots 7 and 8.
         description=_("Toggles braille selection marking with dots 7 and 8 on or off."),
+        # Translators: Script category in the Input Gestures dialog.
         category=_("Braille")
     )
     def script_toggleSelectedDots(self, gesture):
