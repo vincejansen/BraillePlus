@@ -8,7 +8,7 @@ via **Attribra**.
 
 ------------------------------------------------------------------------
 
-## Markeringen aanpassen via NVDA-instellingen
+# Markeringen aanpassen via NVDA-instellingen
 
 Je kunt de selectiemarkering in- of uitschakelen via:
 
@@ -24,69 +24,99 @@ wijziging op te slaan.
 
 ------------------------------------------------------------------------
 
-## Sneltoets instellen via Invoerhandelingen
-
-Je kunt een sneltoets of braillegebaar instellen om de selectiemarkering
-snel aan of uit te zetten:
+# Sneltoets instellen via Invoerhandelingen
 
 1.  Open **NVDA-menu → Opties → Invoerhandelingen**.
 2.  Ga naar de categorie **Braille**.
-3.  Zoek de actie:
-    -   **"Schakelt selectiemarkering met punten 7 en 8 in braille aan
-        of uit."**
+3.  Zoek de actie:\
+    **"Schakelt selectiemarkering met punten 7 en 8 in braille aan of
+    uit."**
 4.  Kies **Gebaar toevoegen**.
 5.  Druk de gewenste sneltoets of voer het gewenste gebaar uit.
-6.  Klik op **OK** om op te slaan.
+6.  Klik op **OK**.
 
 ------------------------------------------------------------------------
 
-# Opmaak-informatie op de leesregel via Attribra
+# Opmaak-informatie via Attribra
 
-Naast selectiemarkering kan Braille Plus ook **opmaakinformatie** tonen
-op de brailleleesregel.\
-Dit gebeurt via **Attribra**.
-
-Wanneer een ingestelde opmaakregel overeenkomt met een
-documentattribuut, voegt Attribra automatisch punten 7 en 8 toe aan de
-betreffende braillecellen.
+Wanneer een ingestelde regel overeenkomt met een documentattribuut
+(bijvoorbeeld vetgedrukte tekst), voegt Attribra automatisch punten 7 en
+8 toe aan de betreffende braillecellen.
 
 ------------------------------------------------------------------------
 
-# Attribra-instellingen beheren
+# Attribra-instellingen beheren via NVDA
 
-Attribra beschikt over een eigen instellingenpaneel binnen NVDA.
-Handmatige bewerking van `attribra.ini` is niet meer nodig.
+Het is niet langer nodig om het bestand `attribra.ini` handmatig te
+bewerken.\
+Attribra heeft een eigen instellingenpaneel binnen NVDA.
 
 ## Attribra-instellingen openen
 
 1.  Open het **NVDA-menu**.
 2.  Ga naar **Opties → Instellingen**.
-3.  Kies in de categorielijst **Attribra**.
+3.  Kies **Attribra** in de categorielijst.
 
-## Werking van het instellingenpaneel
+------------------------------------------------------------------------
 
-### Sectie / Toepassing
+# Werken met toepassingen
 
-Hiermee bepaal je voor welke toepassing de regels gelden:
+Attribra werkt met toepassingen (secties):
 
--   **global** → regels gelden voor alle toepassingen\
--   Een specifieke programmanaam (bijvoorbeeld `winword`) → regels
-    gelden alleen voor die toepassing
+-   **global** → regels gelden voor alle toepassingen.
+-   Een specifieke toepassing (bijvoorbeeld `winword`) → regels gelden
+    alleen binnen die toepassing.
 
-### Regels beheren
+## Een toepassing toevoegen
+
+1.  Klik op **"Applicatie toevoegen..."**.
+2.  Voer de naam van de toepassing in.
+3.  Klik op **OK**.
+
+## Een toepassing verwijderen
+
+1.  Selecteer de applicatie.
+2.  Klik op **"Applicatie verwijderen"**.
+3.  Bevestig met **Ja**.
+
+------------------------------------------------------------------------
+
+# Regels beheren
 
 Een regel heeft de vorm:
 
-attribuutnaam = 0 of 1
+attribute = 0 of 1
 
 Voorbeeld:
 
 bold = 1
 
--   **1** → attribuut is actief\
--   **0** → attribuut is uitgeschakeld
+-   **1** → attribuut actief (punten 7 en 8 worden toegevoegd)
+-   **0** → attribuut uitgeschakeld
 
-## Instellingen opslaan
+## Een regel toevoegen
 
-Wanneer je op **OK** of **Toepassen** klikt, worden alle regels
-opgeslagen en direct actief.
+1.  Selecteer de juiste toepassing.
+2.  Klik op **"Toevoegen..."**.
+3.  Vul de attribuutnaam in.
+4.  Kies de waarde (0 of 1).
+5.  Klik op **OK**.
+
+## Een regel bewerken
+
+1.  Selecteer een regel.
+2.  Klik op **"Bewerken..."**.
+3.  Pas de gegevens aan.
+4.  Klik op **OK**.
+
+## Een regel verwijderen
+
+1.  Selecteer de regel.
+2.  Klik op **"Verwijderen"**.
+
+------------------------------------------------------------------------
+
+# Instellingen opslaan
+
+Klik op **OK** of **Toepassen** om de wijzigingen op te slaan.\
+De regels worden direct actief.

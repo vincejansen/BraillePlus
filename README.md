@@ -1,4 +1,9 @@
-# braillePlus.  
+# braillePlus.
+
+# Downloading the add-on. 
+
+You can download the latesd version of the add-on via [The following link][1], or via the releases and tags-page of this repository. 
+[1]: https://github.com/vincejansen/BraillePlus/releases/download/V1.0.3/braillePlus-1.0.3.nvda-addon  
 
 This add-on aims to improve braillesupport in NVDA, by combining code from Attribra with my own code. 
 
