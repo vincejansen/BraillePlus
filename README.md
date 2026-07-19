@@ -12,5 +12,5 @@ See the full documentation (available in NVDA's add-on help feature) for further
 
 You can download the latest version of the add-on via [The following link][1] or via the releases and tags-page of this repository. 
  
-[1]: https://github.com/vincejansen/BraillePlus/releases/download/V1.0.3/braillePlus-1.0.3.nvda-addon  
+[1]: https://github.com/vincejansen/BraillePlus/releases/download/V1.0.4/braillePlus-1.0.4.nvda-addon  
 
