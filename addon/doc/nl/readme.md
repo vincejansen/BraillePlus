@@ -36,87 +36,49 @@ wijziging op te slaan.
 6.  Klik op **OK**.
 
 ------------------------------------------------------------------------
+# Tekstattributen instellen
 
-# Opmaak-informatie via Attribra
+Met Attribra kun je kiezen welke tekstopmaak op de brailleleesregel wordt gemarkeerd, vanaf nu gaat dit via een vernieuwde interface. 
 
-Wanneer een ingestelde regel overeenkomt met een documentattribuut
-(bijvoorbeeld vetgedrukte tekst), voegt Attribra automatisch punten 7 en
-8 toe aan de betreffende braillecellen.
+## Het instellingenvenster openen:
 
-------------------------------------------------------------------------
+1. Open het **NVDA-menu**.
+2. Kies **Opties → Braille**.
+3. Activeer **Tekstattribuutinstellingen...**
 
-# Attribra-instellingen beheren via NVDA
+## Een applicatie kiezen
 
-Het is niet langer nodig om het bestand `attribra.ini` handmatig te
-bewerken.\
-Attribra heeft een eigen instellingenpaneel binnen NVDA.
+Bovenaan het venster kun je kiezen of de instellingen gelden voor:
 
-## Attribra-instellingen openen
+- **global** – voor alle programma's.
+- Een specifieke applicatie, zoals Microsoft Word of Firefox.
 
-1.  Open het **NVDA-menu**.
-2.  Ga naar **Opties → Instellingen**.
-3.  Kies **Attribra** in de categorielijst.
+Wil je voor een bepaald programma andere instellingen gebruiken? Klik dan op **Applicatie toevoegen...** en voer de naam van het programma in. Om te controleren welke applicatie momenteel actief is kun je de sneltoets ctrl+NVDA+f1 gebruiken. 
 
-------------------------------------------------------------------------
+## Kiezen welke opmaak wordt gemarkeerd
 
-# Werken met toepassingen
+Vink eenvoudig de soorten tekstopmaak aan die je op de brailleleesregel wilt laten markeren.
 
-Attribra werkt met toepassingen (secties):
+Je kunt kiezen uit:
 
--   **global** → regels gelden voor alle toepassingen.
--   Een specifieke toepassing (bijvoorbeeld `winword`) → regels gelden
-    alleen binnen die toepassing.
+- Vet
+- Cursief
+- Onderstreept
+- Spelfouten
 
-## Een toepassing toevoegen
+Wanneer een van deze tekstattributen voorkomt, markeert Attribra deze op de brailleleesregel met **punt 7 en 8**.
 
-1.  Klik op **"Applicatie toevoegen..."**.
-2.  Voer de naam van de toepassing in.
-3.  Klik op **OK**.
+## Instellingen opslaan
 
-## Een toepassing verwijderen
+Klik op **OK** om de wijzigingen op te slaan.
 
-1.  Selecteer de applicatie.
-2.  Klik op **"Applicatie verwijderen"**.
-3.  Bevestig met **Ja**.
+De nieuwe instellingen worden direct gebruikt.
 
-------------------------------------------------------------------------
+## Geavanceerde instellingen
 
-# Regels beheren
+De lijst **Geavanceerde regels** is bedoeld voor ervaren gebruikers die extra tekstattributen willen laten markeren die niet tussen de standaardopties staan.
 
-Een regel heeft de vorm:
+Voor de meeste gebruikers zijn de standaardopties voldoende.
 
-attribute = 0 of 1
 
-Voorbeeld:
-
-bold = 1
-
--   **1** → attribuut actief (punten 7 en 8 worden toegevoegd)
--   **0** → attribuut uitgeschakeld
-
-## Een regel toevoegen
-
-1.  Selecteer de juiste toepassing.
-2.  Klik op **"Toevoegen..."**.
-3.  Vul de attribuutnaam in.
-4.  Kies de waarde (0 of 1).
-5.  Klik op **OK**.
-
-## Een regel bewerken
-
-1.  Selecteer een regel.
-2.  Klik op **"Bewerken..."**.
-3.  Pas de gegevens aan.
-4.  Klik op **OK**.
-
-## Een regel verwijderen
-
-1.  Selecteer de regel.
-2.  Klik op **"Verwijderen"**.
-
-------------------------------------------------------------------------
-
-# Instellingen opslaan
-
-Klik op **OK** of **Toepassen** om de wijzigingen op te slaan.\
-De regels worden direct actief.
+   

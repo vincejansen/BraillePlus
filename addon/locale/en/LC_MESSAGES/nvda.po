@@ -1,34 +1,246 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: brailleSelection 1.0.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-15 19:15+0000\n"
-"PO-Revision-Date: 2026-02-15 19:15+0000\n"
+"Project-Id-Version: 'braillePlus' '1.0.4'\n"
+"Report-Msgid-Bugs-To: 'nvda-translations@groups.io'\n"
+"POT-Creation-Date: 2026-07-19 21:45+0200\n"
+"PO-Revision-Date: 2026-07-19 21:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
 
-msgid "Braille selection marking"
-msgstr "Braille selection marking"
+#. Translators: Label for the text field where the user enters the name of a formatting attribute.
+#: addon\globalPlugins\Attribra.py:133
+msgid "Attribute name"
+msgstr "Attribute name"
 
-msgid "Marks selected items on the braille display with dots 7 and 8."
-msgstr "Marks selected items on the braille display with dots 7 and 8."
+#: addon\globalPlugins\Attribra.py:138
+msgid "Value (0 = off, 1 = on)"
+msgstr "Value (0 = off, 1 = on)"
 
+#. Translators: Title of the dialog containing the Attribra settings.
+#: addon\globalPlugins\Attribra.py:163
+msgid "Textattribute settings."
+msgstr "Textattribute settings."
+
+#. Translators: Label for the list of application-specific configuration sections in Attribra settings.
+#: addon\globalPlugins\Attribra.py:178
+msgid "Section / Application"
+msgstr "Section / Application"
+
+#. Translators: Button label in Attribra settings to add an application-specific section.
+#: addon\globalPlugins\Attribra.py:183
+msgid "Add application…"
+msgstr "Add application…"
+
+#. Translators: Button label in Attribra settings to delete an application-specific section.
+#: addon\globalPlugins\Attribra.py:185
+msgid "Delete application"
+msgstr "Delete application"
+
+#. Translators: Label for the group of standard text attributes that can be marked on a braille display.
+#: addon\globalPlugins\Attribra.py:193
+msgid "Text attributes"
+msgstr "Text attributes"
+
+#. Translators: Checkbox label for marking bold text on a braille display.
+#: addon\globalPlugins\Attribra.py:198
+msgid "Bold"
+msgstr "Bold"
+
+#. Translators: Checkbox label for marking underlined text on a braille display.
+#: addon\globalPlugins\Attribra.py:201
+msgid "Underline"
+msgstr "Underline"
+
+#. Translators: Checkbox label for marking italic text on a braille display.
+#: addon\globalPlugins\Attribra.py:204
+msgid "Italic"
+msgstr "Italic"
+
+#. Translators: Checkbox label for marking spelling errors on a braille display.
+#: addon\globalPlugins\Attribra.py:207
+msgid "Spelling errors"
+msgstr "Spelling errors"
+
+#. Translators: Label for advanced Attribra rules not represented by the standard checkboxes.
+#: addon\globalPlugins\Attribra.py:219
+msgid "Advanced rules"
+msgstr "Advanced rules"
+
+#. Translators: Button label in Attribra settings to add an advanced rule.
+#: addon\globalPlugins\Attribra.py:224
+msgid "Add…"
+msgstr "Add…"
+
+#. Translators: Button label in Attribra settings to edit the selected advanced rule.
+#: addon\globalPlugins\Attribra.py:226
+msgid "Edit…"
+msgstr "Edit…"
+
+#. Translators: Button label in Attribra settings to delete the selected advanced rule.
+#: addon\globalPlugins\Attribra.py:228
+msgid "Delete"
+msgstr "Delete"
+
+#. Translators: Button label in Attribra settings to reload all settings from disk.
+#: addon\globalPlugins\Attribra.py:230
+msgid "Reload"
+msgstr "Reload"
+
+#. Translators: Prompt for entering an application section name. Examples are executable base names.
+#: addon\globalPlugins\Attribra.py:271
+msgid "Enter the application/section name (e.g. 'winword' or 'firefox')."
+msgstr "Enter the application/section name (e.g. 'winword' or 'firefox')."
+
+#. Translators: Title of the dialog to add an application section.
+#: addon\globalPlugins\Attribra.py:273
+msgid "Add application"
+msgstr "Add application"
+
+#. Translators: Message spoken when the user did not provide a required application name.
+#: addon\globalPlugins\Attribra.py:282
+msgid "Missing name."
+msgstr "Missing name."
+
+#. Translators: Message spoken when the application section already exists.
+#: addon\globalPlugins\Attribra.py:290
+msgid "This application already exists."
+msgstr "This application already exists."
+
+#. Translators: Confirmation message shown before deleting an application section. {name} is the section name.
+#: addon\globalPlugins\Attribra.py:301
+msgid ""
+"Are you sure you want to delete the application/section '{name}'? All rules "
+"in this section will be removed."
+msgstr ""
+"Are you sure you want to delete the application/section '{name}'? All rules "
+"in this section will be removed."
+
+#. Translators: Title of the confirmation dialog.
+#: addon\globalPlugins\Attribra.py:303
+msgid "Confirm"
+msgstr "Confirm"
+
+#. Translators: Message spoken after deleting an application section.
+#: addon\globalPlugins\Attribra.py:310
+msgid "Application deleted."
+msgstr "Application deleted."
+
+#. Translators: Title of the dialog to add an advanced rule.
+#: addon\globalPlugins\Attribra.py:376
+msgid "Add rule"
+msgstr "Add rule"
+
+#. Translators: Message spoken when the attribute name field is empty.
+#: addon\globalPlugins\Attribra.py:382 addon\globalPlugins\Attribra.py:403
+msgid "Missing attribute name."
+msgstr "Missing attribute name."
+
+#. Translators: Title of the dialog to edit an advanced rule.
+#: addon\globalPlugins\Attribra.py:397
+msgid "Edit rule"
+msgstr "Edit rule"
+
+#. Translators: Message spoken after reloading Attribra settings from disk.
+#: addon\globalPlugins\Attribra.py:427
+msgid "Attribra settings reloaded."
+msgstr "Attribra settings reloaded."
+
+#. Translators: Message spoken after saving Attribra settings.
+#: addon\globalPlugins\Attribra.py:441
+msgid "Attribra settings saved."
+msgstr "Attribra settings saved."
+
+#. Translators: Message spoken when saving Attribra settings failed.
+#: addon\globalPlugins\Attribra.py:445
+msgid "Save failed; see log for details."
+msgstr "Save failed; see log for details."
+
+#. Translators: Label for a button in NVDA's Braille settings that opens the Attribra configuration dialog.
+#: addon\globalPlugins\Attribra.py:495
+msgid "Textattribute settings…"
+msgstr "Textattribute settings…"
+
+#. Translators: Message spoken when the Attribra settings dialog could not be opened.
+#: addon\globalPlugins\Attribra.py:528
+msgid "Could not open Attribra settings."
+msgstr "Could not open Attribra settings."
+
+#. Translators: Message spoken when toggling debug logging of TextInfo at the cursor. {state} is "start" or "stop".
+#. Translators: The state toggled by the "log fields at cursor" command.
+#: addon\globalPlugins\Attribra.py:654
+msgid "start"
+msgstr "start"
+
+#: addon\globalPlugins\Attribra.py:654
+msgid "stop"
+msgstr "stop"
+
+#: addon\globalPlugins\Attribra.py:655
+msgid "Debug TextInfo logging: {state}"
+msgstr "Debug TextInfo logging: {state}"
+
+#: addon\globalPlugins\BrailleSelection.py:74
 msgid "Braille selection marking: enabled"
 msgstr "Braille selection marking: enabled"
 
+#. Translators: Message reported when braille selection marking has been disabled.
+#: addon\globalPlugins\BrailleSelection.py:77
 msgid "Braille selection marking: disabled"
 msgstr "Braille selection marking: disabled"
 
+#. Translators: Label for a checkbox in NVDA's Braille settings panel.
+#. Translators: When enabled, dots 7 and 8 are added to the braille cells corresponding to the selected item's text.
+#: addon\globalPlugins\BrailleSelection.py:106
 msgid "Mark selected items with dots 7 and 8 (item text only)"
 msgstr "Mark selected items with dots 7 and 8 (item text only)"
 
+#. Translators: Description for an input gesture/script.
+#. Translators: This script toggles marking of selected items in braille using dots 7 and 8.
+#: addon\globalPlugins\BrailleSelection.py:150
 msgid "Toggles braille selection marking with dots 7 and 8 on or off."
 msgstr "Toggles braille selection marking with dots 7 and 8 on or off."
 
+#. Translators: Script category in the Input Gestures dialog.
+#: addon\globalPlugins\BrailleSelection.py:152
 msgid "Braille"
 msgstr "Braille"
+
+#. Add-on summary/title, usually the user visible name of the add-on
+#. Translators: Summary/title for this add-on
+#. to be shown on installation and add-on information found in add-on store
+#: buildVars.py:21
+msgid "braille Plus"
+msgstr "braille Plus"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+#: buildVars.py:24
+msgid ""
+"Displays the selection of items in braille with dots 7 and 8, as well as "
+"formatting thanks to Attribra."
+msgstr ""
+"Displays the selection of items in braille with dots 7 and 8, as well as "
+"formatting thanks to Attribra."
+
+#. Brief changelog for this version
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+#: buildVars.py:29
+msgid ""
+" This release adds a new, much more simple to use interface to configure "
+"text attributes. \n"
+"    Updated documentation."
+msgstr ""
+" This release adds a new, much more simple to use interface to configure "
+"text attributes. \n"
+"    Updated documentation."

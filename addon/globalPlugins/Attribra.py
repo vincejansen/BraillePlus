@@ -5,13 +5,13 @@
 #See the file COPYING for more details.
 #Copyright (C) 2017 Alberto Zanella <lapostadialberto@gmail.com>
 #
-# Extended with an NVDA Settings panel (Attribra) to edit attribra.ini without manual editing.
+# Extended with an easy to use interface (Attribra) to edit attribra.ini without manual editing.
 #Copyright 2025 Vince Jansen <jansen.vince@gmail.com>
 import os
 
 import addonHandler
 addonHandler.initTranslation()
-from addonHandler import getCodeAddon  # type: ignore
+from addonHandler import getCodeAddon  
 
 import api
 import appModuleHandler
@@ -158,20 +158,26 @@ class AttribraRuleDialog(wx.Dialog):
 		return self.attrCtrl.GetValue().strip(), self.valCtrl.GetStringSelection().strip()
 
 
-class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
-	# Translators: Title of the add-on settings panel shown in NVDA Settings.
-	title = _("Attribra")
+class AttribraSettingsDialog(settingsDialogs.SettingsDialog):
+	# Translators: Title of the dialog containing the Attribra settings.
+	title = _("Textattribute settings.")
+
+	_STANDARD_ATTRIBUTES = (
+		("bold", "Bold"),
+		("underline", "Underline"),
+		("italic", "Italic"),
+		("invalid-spelling", "Spelling errors"),
+	)
 
 	def makeSettings(self, settingsSizer):
 		self.plugin = getattr(self, "_attribraPlugin", None)
-
+		self._updatingControls = False
 		sHelper = guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
 
-		# Translators: Label for the list of available sections (applications) in the Attribra settings.
+		# Translators: Label for the list of application-specific configuration sections in Attribra settings.
 		self.sectionChoice = sHelper.addLabeledControl(_("Section / Application"), wx.Choice)
 		self.sectionChoice.Bind(wx.EVT_CHOICE, self._onSectionChanged)
 
-		# Section (application) management buttons
 		sectionBtnSizer = wx.BoxSizer(wx.HORIZONTAL)
 		# Translators: Button label in Attribra settings to add an application-specific section.
 		self.addSectionBtn = wx.Button(self, label=_("Add application…"))
@@ -180,38 +186,64 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 		self.addSectionBtn.Bind(wx.EVT_BUTTON, self._onAddSection)
 		self.delSectionBtn.Bind(wx.EVT_BUTTON, self._onDeleteSection)
 		sectionBtnSizer.Add(self.addSectionBtn, 0, wx.RIGHT, guiHelper.BORDER_FOR_DIALOGS)
-		sectionBtnSizer.Add(self.delSectionBtn, 0, wx.RIGHT, guiHelper.BORDER_FOR_DIALOGS)
+		sectionBtnSizer.Add(self.delSectionBtn, 0)
 		sHelper.addItem(sectionBtnSizer)
 
-		# Translators: Label for the list of rules in the Attribra settings.
-		self.rulesList = sHelper.addLabeledControl(_("Rules"), wx.ListBox)
+		# Translators: Label for the group of standard text attributes that can be marked on a braille display.
+		attributesBox = wx.StaticBox(self, label=_("Text attributes"))
+		attributesSizer = wx.StaticBoxSizer(attributesBox, wx.VERTICAL)
+		self.attributeCheckboxes = {}
+
+		# Translators: Checkbox label for marking bold text on a braille display.
+		self.boldCheckBox = wx.CheckBox(self, label=_("Bold"))
+		self.attributeCheckboxes["bold"] = self.boldCheckBox
+		# Translators: Checkbox label for marking underlined text on a braille display.
+		self.underlineCheckBox = wx.CheckBox(self, label=_("Underline"))
+		self.attributeCheckboxes["underline"] = self.underlineCheckBox
+		# Translators: Checkbox label for marking italic text on a braille display.
+		self.italicCheckBox = wx.CheckBox(self, label=_("Italic"))
+		self.attributeCheckboxes["italic"] = self.italicCheckBox
+		# Translators: Checkbox label for marking spelling errors on a braille display.
+		self.spellingErrorsCheckBox = wx.CheckBox(self, label=_("Spelling errors"))
+		self.attributeCheckboxes["invalid-spelling"] = self.spellingErrorsCheckBox
+
+		for attrName, checkBox in self.attributeCheckboxes.items():
+			# wx.CheckBox does not implement SetClientData in wxPython.
+			# Store the NVDA format-field name directly on the control instead.
+			checkBox._attribraAttrName = attrName
+			checkBox.Bind(wx.EVT_CHECKBOX, self._onAttributeToggled)
+			attributesSizer.Add(checkBox, 0, wx.ALL, guiHelper.BORDER_FOR_DIALOGS)
+		sHelper.addItem(attributesSizer)
+
+		# Translators: Label for advanced Attribra rules not represented by the standard checkboxes.
+		self.rulesList = sHelper.addLabeledControl(_("Advanced rules"), wx.ListBox)
 		self.rulesList.Bind(wx.EVT_LISTBOX_DCLICK, self._onEdit)
 
 		btnSizer = wx.BoxSizer(wx.HORIZONTAL)
-		# Translators: Button label in Attribra settings to add a rule.
+		# Translators: Button label in Attribra settings to add an advanced rule.
 		self.addBtn = wx.Button(self, label=_("Add…"))
-		# Translators: Button label in Attribra settings to edit the selected rule.
+		# Translators: Button label in Attribra settings to edit the selected advanced rule.
 		self.editBtn = wx.Button(self, label=_("Edit…"))
-		# Translators: Button label in Attribra settings to delete the selected rule.
+		# Translators: Button label in Attribra settings to delete the selected advanced rule.
 		self.delBtn = wx.Button(self, label=_("Delete"))
-		# Translators: Button label in Attribra settings to reload rules from disk.
+		# Translators: Button label in Attribra settings to reload all settings from disk.
 		self.reloadBtn = wx.Button(self, label=_("Reload"))
 
 		self.addBtn.Bind(wx.EVT_BUTTON, self._onAdd)
 		self.editBtn.Bind(wx.EVT_BUTTON, self._onEdit)
 		self.delBtn.Bind(wx.EVT_BUTTON, self._onDelete)
 		self.reloadBtn.Bind(wx.EVT_BUTTON, self._onReload)
-
-		for b in (self.addBtn, self.editBtn, self.delBtn, self.reloadBtn):
-			btnSizer.Add(b, 0, wx.RIGHT, guiHelper.BORDER_FOR_DIALOGS)
-
+		for button in (self.addBtn, self.editBtn, self.delBtn, self.reloadBtn):
+			btnSizer.Add(button, 0, wx.RIGHT, guiHelper.BORDER_FOR_DIALOGS)
 		sHelper.addItem(btnSizer)
 
 		self._refreshSections()
 
+	def postInit(self):
+		"""Place keyboard focus on the application selector."""
+		self.sectionChoice.SetFocus()
+
 	def _normalizeSectionName(self, name: str) -> str:
-		# Keep it simple: strip whitespace.
-		# App names in NVDA are typically executable base names (e.g. 'winword').
 		return (name or "").strip()
 
 	def _selectSectionByName(self, name: str):
@@ -221,67 +253,52 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 		except ValueError:
 			return
 		self.sectionChoice.SetSelection(idx)
-		self._refreshRules()
+		self._refreshControls()
 
 	def _refreshSections(self):
-		if not self.plugin:
-			self.sectionChoice.SetItems(["global"])
-			self.sectionChoice.SetSelection(0)
-			self._refreshRules()
-			return
-
-		sections = sorted(set(self.plugin.configs.keys()) | {"global"})
+		current = self._currentSection() if self.sectionChoice.GetCount() else "global"
+		sections = sorted(set(self.plugin.configs.keys()) | {"global"}) if self.plugin else ["global"]
 		self.sectionChoice.SetItems(sections)
-		# keep selection if possible
-		if self.sectionChoice.GetSelection() == wx.NOT_FOUND:
-			self.sectionChoice.SetSelection(0)
-		self._refreshRules()
+		self.sectionChoice.SetSelection(sections.index(current) if current in sections else sections.index("global"))
+		self._refreshControls()
 
 	def _onAddSection(self, evt):
 		if not self.plugin:
 			return
 		dlg = wx.TextEntryDialog(
 			self,
-			# Translators: Prompt for entering an application (section) name. Example values are program executable names.
+			# Translators: Prompt for entering an application section name. Examples are executable base names.
 			_("Enter the application/section name (e.g. 'winword' or 'firefox')."),
 			# Translators: Title of the dialog to add an application section.
 			_("Add application"),
 			"",
 		)
-		if dlg.ShowModal() == wx.ID_OK:
+		try:
+			if dlg.ShowModal() != wx.ID_OK:
+				return
 			name = self._normalizeSectionName(dlg.GetValue())
 			if not name:
-				# Translators: Message spoken when the user did not provide a required name.
+				# Translators: Message spoken when the user did not provide a required application name.
 				ui.message(_("Missing name."))
-				dlg.Destroy()
 				return
-			# If a case-insensitive match exists, reuse it.
-			existing = None
-			for s in self.plugin.configs.keys():
-				if s.lower() == name.lower():
-					existing = s
-					break
+			existing = next((s for s in self.plugin.configs if s.lower() == name.lower()), None)
 			if existing is None:
-				self.plugin.configs.setdefault(name, {})
-				self._refreshSections()
-				self._selectSectionByName(name)
+				self.plugin.configs[name] = {}
+				existing = name
 			else:
-				self._refreshSections()
-				self._selectSectionByName(existing)
 				# Translators: Message spoken when the application section already exists.
 				ui.message(_("This application already exists."))
-		dlg.Destroy()
+			self._refreshSections()
+			self._selectSectionByName(existing)
+		finally:
+			dlg.Destroy()
 
 	def _onDeleteSection(self, evt):
 		if not self.plugin:
 			return
 		section = self._currentSection()
-		# 'global' is always shown; deleting it clears/removes stored rules.
-		if section not in self.plugin.configs and section != "global":
-			return
-		msg = _("Are you sure you want to delete the application/section '{name}'? All rules in this section will be removed.").format(
-			name=section
-		)
+		# Translators: Confirmation message shown before deleting an application section. {name} is the section name.
+		msg = _("Are you sure you want to delete the application/section '{name}'? All rules in this section will be removed.").format(name=section)
 		# Translators: Title of the confirmation dialog.
 		res = wx.MessageBox(msg, _("Confirm"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_WARNING)
 		if res != wx.YES:
@@ -294,22 +311,51 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 
 	def _currentSection(self):
 		i = self.sectionChoice.GetSelection()
-		if i == wx.NOT_FOUND:
-			return "global"
-		return self.sectionChoice.GetString(i)
+		return "global" if i == wx.NOT_FOUND else self.sectionChoice.GetString(i)
 
-	def _refreshRules(self):
-		section = self._currentSection()
-		mapping = (self.plugin.configs.get(section) if self.plugin else None) or {}
-		items = []
-		for attr, vals in sorted(mapping.items(), key=lambda x: x[0].lower()):
-			items.append(f"{attr} = {_list_to_ini_value(vals)}")
-		self.rulesList.SetItems(items)
-		if items:
-			self.rulesList.SetSelection(0)
+	def _ensureSectionExists(self, section):
+		if section not in self.plugin.configs:
+			self.plugin.configs[section] = {}
+
+	def _refreshControls(self):
+		self._updatingControls = True
+		self.Freeze()
+		try:
+			section = self._currentSection()
+			mapping = (self.plugin.configs.get(section) if self.plugin else None) or {}
+			for attrName, checkBox in self.attributeCheckboxes.items():
+				checkBox.SetValue(attrName in mapping and True in mapping[attrName])
+			advancedItems = []
+			for attr, vals in sorted(mapping.items(), key=lambda item: item[0].lower()):
+				if attr not in self.attributeCheckboxes:
+					advancedItems.append(f"{attr} = {_list_to_ini_value(vals)}")
+			self.rulesList.SetItems(advancedItems)
+			if advancedItems:
+				self.rulesList.SetSelection(0)
+			else:
+				self.rulesList.SetSelection(wx.NOT_FOUND)
+			self.Layout()
+		finally:
+			self.Thaw()
+			self._updatingControls = False
 
 	def _onSectionChanged(self, evt):
-		self._refreshRules()
+		self._refreshControls()
+
+	def _onAttributeToggled(self, evt):
+		if self._updatingControls or not self.plugin:
+			return
+		checkBox = evt.GetEventObject()
+		attrName = getattr(checkBox, "_attribraAttrName", None)
+		if not attrName:
+			log.error("Attribra: Checkbox event without an attribute name")
+			return
+		section = self._currentSection()
+		self._ensureSectionExists(section)
+		if checkBox.IsChecked():
+			self.plugin.configs[section][attrName] = _parse_value_to_list("1")
+		else:
+			self.plugin.configs[section].pop(attrName, None)
 
 	def _selectedAttr(self):
 		section = self._currentSection()
@@ -318,34 +364,27 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 		if sel == wx.NOT_FOUND:
 			return None, None
 		line = self.rulesList.GetString(sel)
-		if "=" not in line:
-			return None, None
-		attr = line.split("=", 1)[0].strip()
-		return attr, mapping.get(attr)
-
-	def _ensureSectionExists(self, section):
-		if section not in self.plugin.configs:
-			self.plugin.configs[section] = {}
+		attr = line.split("=", 1)[0].strip() if "=" in line else ""
+		return (attr, mapping.get(attr)) if attr else (None, None)
 
 	def _onAdd(self, evt):
 		if not self.plugin:
 			return
 		section = self._currentSection()
 		self._ensureSectionExists(section)
-
-		# Translators: Title of the dialog to add a new rule.
+		# Translators: Title of the dialog to add an advanced rule.
 		dlg = AttribraRuleDialog(self, _("Add rule"))
-		# Translators: Title of the dialog to add a new rule.
-		dlg = AttribraRuleDialog(self, _("Add rule"))
-		if dlg.ShowModal() == wx.ID_OK:
-			attr, valsText = dlg.getData()
-			if not attr:
-				# Translators: Message spoken when the attribute name field is empty.
-				ui.message(_("Missing attribute name."))
-				return
-			self.plugin.configs[section][attr] = _parse_value_to_list(valsText)
-			self._refreshRules()
-		dlg.Destroy()
+		try:
+			if dlg.ShowModal() == wx.ID_OK:
+				attr, valsText = dlg.getData()
+				if not attr:
+					# Translators: Message spoken when the attribute name field is empty.
+					ui.message(_("Missing attribute name."))
+					return
+				self.plugin.configs[section][attr] = _parse_value_to_list(valsText)
+				self._refreshControls()
+		finally:
+			dlg.Destroy()
 
 	def _onEdit(self, evt):
 		if not self.plugin:
@@ -354,31 +393,30 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 		attr, vals = self._selectedAttr()
 		if not attr:
 			return
-		currentText = _list_to_ini_value(vals or [])
-		# Translators: Title of the dialog to edit an existing rule.
-		dlg = AttribraRuleDialog(self, _("Edit rule"), attrName=attr, valuesText=currentText)
-		if dlg.ShowModal() == wx.ID_OK:
-			newAttr, valsText = dlg.getData()
-			if not newAttr:
-				# Translators: Message spoken when the attribute name field is empty.
-				ui.message(_("Missing attribute name."))
-				return
-			# rename if needed
-			if newAttr != attr:
-				self.plugin.configs[section].pop(attr, None)
-			self.plugin.configs[section][newAttr] = _parse_value_to_list(valsText)
-			self._refreshRules()
-		dlg.Destroy()
+		# Translators: Title of the dialog to edit an advanced rule.
+		dlg = AttribraRuleDialog(self, _("Edit rule"), attrName=attr, valuesText=_list_to_ini_value(vals or []))
+		try:
+			if dlg.ShowModal() == wx.ID_OK:
+				newAttr, valsText = dlg.getData()
+				if not newAttr:
+					# Translators: Message spoken when the attribute name field is empty.
+					ui.message(_("Missing attribute name."))
+					return
+				if newAttr != attr:
+					self.plugin.configs[section].pop(attr, None)
+				self.plugin.configs[section][newAttr] = _parse_value_to_list(valsText)
+				self._refreshControls()
+		finally:
+			dlg.Destroy()
 
 	def _onDelete(self, evt):
 		if not self.plugin:
 			return
 		section = self._currentSection()
 		attr, _vals = self._selectedAttr()
-		if not attr:
-			return
-		self.plugin.configs.get(section, {}).pop(attr, None)
-		self._refreshRules()
+		if attr:
+			self.plugin.configs.get(section, {}).pop(attr, None)
+			self._refreshControls()
 
 	def _onReload(self, evt):
 		if not self.plugin:
@@ -393,7 +431,6 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 			return
 		try:
 			self.plugin.savecfgs()
-			# refresh active rules for current focus app
 			try:
 				obj = api.getFocusObject()
 				if obj:
@@ -406,6 +443,11 @@ class AttribraSettingsPanel(settingsDialogs.SettingsPanel):
 			log.exception("Error saving Attribra settings")
 			# Translators: Message spoken when saving Attribra settings failed.
 			ui.message(_("Save failed; see log for details."))
+
+	def onOk(self, evt):
+		"""Save Attribra settings and close the dialog."""
+		self.onSave()
+		super().onOk(evt)
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
@@ -427,17 +469,65 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# When no rules are configured, the patched hooks behave like NVDA defaults.
 		self._patchBrailleHooks()
 
-		# Register settings panel under a dedicated category.
+		super().__init__()
+
+		# Add an Attribra button to NVDA's existing Braille category.
+		# Attribra deliberately does not register a separate settings category.
+		self._patchBrailleSettingsPanel()
+
+
+	def _patchBrailleSettingsPanel(self):
+		"""Add a button for Attribra to NVDA's Braille settings category."""
+		panelCls = settingsDialogs.BrailleSettingsPanel
+		currentMakeSettings = panelCls.makeSettings
+		# Replace an older Attribra wrapper after an add-on reload. This ensures
+		# the button always refers to the current GlobalPlugin instance.
+		if getattr(currentMakeSettings, "_attribraWrapper", False):
+			currentMakeSettings = getattr(currentMakeSettings, "_attribraOriginal", currentMakeSettings)
+			panelCls.makeSettings = currentMakeSettings
+
+		plugin = self
+		self._origBrailleMakeSettings = currentMakeSettings
+
+		def makeSettingsWithAttribra(panel, settingsSizer):
+			currentMakeSettings(panel, settingsSizer)
+			# Translators: Label for a button in NVDA's Braille settings that opens the Attribra configuration dialog.
+			panel.attribraSettingsButton = wx.Button(panel, label=_("Textattribute settings…"))
+			panel.attribraSettingsButton.Bind(
+				wx.EVT_BUTTON,
+				lambda evt: plugin._openAttribraSettingsDialog(panel),
+			)
+			settingsSizer.Add(
+				panel.attribraSettingsButton,
+				flag=wx.TOP | wx.ALIGN_LEFT,
+				border=guiHelper.BORDER_FOR_DIALOGS,
+			)
+
+		makeSettingsWithAttribra._attribraWrapper = True
+		makeSettingsWithAttribra._attribraOriginal = currentMakeSettings
+		panelCls.makeSettings = makeSettingsWithAttribra
+
+	def _unpatchBrailleSettingsPanel(self):
+		"""Restore NVDA's original Braille settings builder."""
 		try:
-			AttribraSettingsPanel._attribraPlugin = self
-			if AttribraSettingsPanel not in settingsDialogs.NVDASettingsDialog.categoryClasses:
-				settingsDialogs.NVDASettingsDialog.categoryClasses.append(AttribraSettingsPanel)
+			panelCls = settingsDialogs.BrailleSettingsPanel
+			current = panelCls.makeSettings
+			if getattr(current, "_attribraWrapper", False):
+				panelCls.makeSettings = getattr(current, "_attribraOriginal", self._origBrailleMakeSettings)
 		except Exception:
-			log.exception("Could not register Attribra settings panel")
+			log.exception("Could not remove the Attribra button from Braille settings")
 
-		super(GlobalPlugin, self).__init__()
-
-
+	def _openAttribraSettingsDialog(self, parent):
+		"""Open Attribra settings as a modal dialog from the Braille category."""
+		AttribraSettingsDialog._attribraPlugin = self
+		try:
+			dlg = AttribraSettingsDialog(parent, resizeable=True, multiInstanceAllowed=True)
+		except Exception:
+			log.exception("Could not create Attribra settings dialog")
+			# Translators: Message spoken when the Attribra settings dialog could not be opened.
+			ui.message(_("Could not open Attribra settings."))
+			return
+		dlg.ShowModal()
 
 	def _patchBrailleHooks(self):
 		"""Monkeypatch NVDA's braille TextInfoRegion to support Attribra rules.
@@ -494,14 +584,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
 	def terminate(self):
+		self._unpatchBrailleSettingsPanel()
 		self._unpatchBrailleHooks()
-		# Unregister settings panel
-		try:
-			if AttribraSettingsPanel in settingsDialogs.NVDASettingsDialog.categoryClasses:
-				settingsDialogs.NVDASettingsDialog.categoryClasses.remove(AttribraSettingsPanel)
-		except Exception:
-			pass
-		super(GlobalPlugin, self).terminate()
+		AttribraSettingsDialog._attribraPlugin = None
+		super().terminate()
 
 	def event_gainFocus(self, obj, nextHandler):
 		nextHandler()
@@ -549,8 +635,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		cfg.write()
 		# Reparse so internal types are normalized (ints, RGB parsing, etc.)
 		self.parsecfgs()
-
-	# Legacy gesture: open settings instead of opening ini directly.
 	def script_editConfig(self, gesture):
 		try:
 			gui.mainFrame.onNVDASettingsCommand(None)
