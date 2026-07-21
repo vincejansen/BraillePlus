@@ -1,0 +1,165 @@
+name: Build and publish add-on
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "[0-9]*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          python -m pip install scons markdown
+          sudo apt-get update
+          sudo apt-get install --yes gettext
+
+      - name: Determine release version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(python - <<'PY'
+          import re
+          from pathlib import Path
+
+          text = Path("buildVars.py").read_text(encoding="utf-8")
+          match = re.search(r'addon_version\s*=\s*["\']([^"\']+)["\']', text)
+          if not match:
+              raise SystemExit("addon_version was niet gevonden in buildVars.py")
+          print(match.group(1))
+          PY
+            )
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releaseversie: $VERSION"
+
+      - name: Verify tag matches add-on version
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          BUILD_VERSION=$(python - <<'PY'
+          import re
+          from pathlib import Path
+
+          text = Path("buildVars.py").read_text(encoding="utf-8")
+          match = re.search(r'addon_version\s*=\s*["\']([^"\']+)["\']', text)
+          if not match:
+              raise SystemExit("addon_version was niet gevonden in buildVars.py")
+          print(match.group(1))
+          PY
+          )
+
+          if [[ "$BUILD_VERSION" != "${{ steps.version.outputs.version }}" ]]; then
+            echo "Tagversie ${{ steps.version.outputs.version }} komt niet overeen met addon_version $BUILD_VERSION."
+            exit 1
+          fi
+
+      - name: Build add-on package
+        run: |
+          rm -f ./*.nvda-addon
+          scons
+
+      - name: Find built package
+        id: package
+        shell: bash
+        run: |
+          shopt -s nullglob
+          PACKAGES=( ./*.nvda-addon )
+
+          if (( ${#PACKAGES[@]} != 1 )); then
+            echo "Er werd precies één .nvda-addon-bestand verwacht, maar ${#PACKAGES[@]} gevonden."
+            printf '%s\n' "${PACKAGES[@]}"
+            exit 1
+          fi
+
+          echo "path=${PACKAGES[0]}" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "${PACKAGES[0]}")" >> "$GITHUB_OUTPUT"
+
+      - name: Create release notes from changelog
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import os
+          import re
+          from pathlib import Path
+
+          version = os.environ["RELEASE_VERSION"]
+          changelog = Path("changelog.md").read_text(encoding="utf-8")
+
+          heading = re.compile(
+              rf"^##\s+(?:Changes in|Version)\s+v?{re.escape(version)}\s*$",
+              re.IGNORECASE | re.MULTILINE,
+          )
+          match = heading.search(changelog)
+          if not match:
+              raise SystemExit(
+                  f"Geen changelogsectie gevonden voor versie {version}. "
+                  f"Verwacht bijvoorbeeld: ## Changes in {version}"
+              )
+
+          next_heading = re.search(r"^##\s+", changelog[match.end():], re.MULTILINE)
+          end = match.end() + next_heading.start() if next_heading else len(changelog)
+          notes = changelog[match.end():end].strip()
+
+          package = Path(os.environ["PACKAGE_PATH"])
+          digest = hashlib.sha256(package.read_bytes()).hexdigest()
+
+          release_notes = (
+              f"{notes}\n\n"
+              f"### SHA-256\n\n"
+              f"```text\n{digest}  {package.name}\n```\n"
+          )
+          Path("release-notes.md").write_text(release_notes, encoding="utf-8")
+          PY
+
+          cat release-notes.md
+
+      - name: Publish GitHub release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PRERELEASE_FLAG=""
+          if [[ "$VERSION" == *-* ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+
+          gh release create "$GITHUB_REF_NAME" \
+            "$PACKAGE_PATH" \
+            --title "Braille Plus $VERSION" \
+            --notes-file release-notes.md \
+            $PRERELEASE_FLAG
+
+      - name: Upload package for manual runs
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.package.outputs.name }}
+          path: ${{ steps.package.outputs.path }}
+          if-no-files-found: error
