@@ -14,3 +14,6 @@ You can download the latest version of the add-on via [The following link][1] or
  
 [1]: https://github.com/vincejansen/BraillePlus/releases/download/V1.0.4/braillePlus-1.0.4.nvda-addon  
 
+
+# Disclaimer: 
+Some parts of the add-on are partially written with AI, chat GPT. That being said: Everything is, and will be, manually tested during the development process.  
